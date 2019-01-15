@@ -14,8 +14,8 @@ public class PostgresqlDDLAnalyzerImpl implements DDLAnalyzer {
     @Override
     public Schema getSchema() throws SQLException {
         Connection connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/test2",
-                "root",
+                "jdbc:postgresql://localhost:5432/postgres",
+                "postgres",
                 "root"
         );
 
@@ -29,9 +29,13 @@ public class PostgresqlDDLAnalyzerImpl implements DDLAnalyzer {
             String tableName = resultSet.getString(1);
 
             Table table = new Table(tableName);
-            String showColumnsSql = "SELECT column_name FROM information_schema.columns WHERE table_name ='" + tableName + "';";
-            Statement showColumnsStatement = connection.createStatement();
-            ResultSet resultSet1 = showColumnsStatement.executeQuery(showColumnsSql);
+            PreparedStatement showColumnsStatement = connection.prepareStatement(
+                    "SELECT column_name, data_type, is_nullable, is_identity, column_default, is_generated " +
+                            " FROM information_schema.columns " +
+                            " WHERE table_schema = 'public' " +
+                            " AND table_name   = ?;");
+            showColumnsStatement.setString(1, tableName);
+            ResultSet resultSet1 = showColumnsStatement.executeQuery();
             while (resultSet1.next()) {
 
                 table.addColumns(new Column(resultSet1.getString(1), resultSet1.getString(2), resultSet1.getString(3),
@@ -39,17 +43,17 @@ public class PostgresqlDDLAnalyzerImpl implements DDLAnalyzer {
             }
 
             PreparedStatement showFkeysStatement = connection.prepareStatement(
-                    "SELECT  tc.column_name,  tc.constraint_name, ccu.table_name,  ccu.column_name " +
+                    "SELECT  tc.table_name, kcu.column_name, tc.constraint_name, ccu.table_name, ccu.column_name " +
                             " FROM information_schema.table_constraints AS tc " +
-                            "    JOIN information_schema.constraint_column_usage AS ccu" +
-                            "      ON ccu.constraint_name = tc.constraint_name" +
-                            "      AND ccu.table_schema = tc.table_schema " +
-                            " WHERE tc.constraint_type = ? AND tc.table_name= ?;"
-            );
-            showFkeysStatement.setString(1, "FOREIGN KEY");
-            showFkeysStatement.setString(2, tableName);
+                            " JOIN information_schema.key_column_usage AS kcu" +
+                            " ON tc.constraint_name = kcu.constraint_name" +
+                            " AND tc.table_schema = kcu.table_schema" +
+                            " JOIN information_schema.constraint_column_usage AS ccu" +
+                            " ON ccu.constraint_name = tc.constraint_name" +
+                            " AND ccu.table_schema = tc.table_schema" +
+                            " WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name= ? ;");
 
-
+showFkeysStatement.setString(1, tableName);
             ResultSet resultSet2 = showFkeysStatement.executeQuery();
             while (resultSet2.next()) {
                 table.addConstraint(new Constraint(resultSet2.getString(1), resultSet2.getString(2),

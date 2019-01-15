@@ -15,8 +15,8 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
-        String jdbcUrl = "jdbc:mysql://localhost:3306/test2";
-        //String jdbcUrl = "jdbc:postgresql://localhost:5432/test2";
+        //String jdbcUrl = "jdbc:mysql://localhost:3306/test2";
+        String jdbcUrl = "jdbc:postgresql://localhost:5432/public";
         Schema schema = DDlAnalyzerFactory.getAnalyzer(JdbcUrlHelper.getDbType(jdbcUrl)).getSchema();
 
         for (Table table : schema.getTables()) {
