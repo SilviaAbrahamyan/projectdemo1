@@ -1,11 +1,11 @@
 package com.aca;
 
-import com.aca.components.Column;
-import com.aca.components.Constraint;
-import com.aca.components.Schema;
-import com.aca.components.Table;
+import com.aca.components.*;
+import com.aca.converter.SchemaConverter;
 import com.aca.ddlanalyzer.DDlAnalyzerFactory;
 import com.aca.helper.JdbcUrlHelper;
+import com.aca.sqlgenerator.MySQLGenerator;
+import com.aca.sqlgenerator.PostgreSQLGenerator;
 
 import java.sql.SQLException;
 
@@ -15,31 +15,39 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
-        //String jdbcUrl = "jdbc:mysql://localhost:3306/test2";
-        String jdbcUrl = "jdbc:postgresql://localhost:5432/public";
-        Schema schema = DDlAnalyzerFactory.getAnalyzer(JdbcUrlHelper.getDbType(jdbcUrl)).getSchema();
+        String jdbcUrl = "jdbc:mysql://localhost:3306/test2";
+       /// String jdbcUrl = "jdbc:postgresql://localhost:5432/postgres";
+        Schema<MySQLTable> schema = DDlAnalyzerFactory.getAnalyzer(JdbcUrlHelper.getDbType(jdbcUrl)).getSchema(jdbcUrl, "root", "root");
 
-        for (Table table : schema.getTables()) {
-            System.out.println(table.getName());
-            for (Column column : table.getColumns()) {
-                System.out.print("\t\t" + column.getField());
-                System.out.print("\t\t" + column.getType());
-                System.out.print("\t\t" + column.getNullable());
-                System.out.print("\t\t" + column.getKey());
-                System.out.print("\t\t" + column.getDefaultValue());
-                System.out.println("\t\t" + column.getExtra());
-            }
-            if (table.getConstraints().size() != 0) {
-                System.out.println("FOREIGN KEYs for " + table.getName());
-                for (Constraint constraint : table.getConstraints()) {
-                    System.out.print("\t\t" + constraint.getColumn());
-                    System.out.print("\t\t" + constraint.getConstraint());
-                    System.out.print("\t\t" + constraint.getReferencedTable());
-                    System.out.println("\t\t" + constraint.getReferencedColumn());
-                }
-                System.out.println();
-            }
-        }
+        schema.getTables().forEach(
+                t -> {
+                    System.out.println("Table : " + t.getTableName());
+                    System.out.println("Columns :");
+                    System.out.println("\t" + t.getColumns());
+                    {
+                        if (t.getConstraints().size() != 0) {
+                            System.out.println("Constraint :");
+                            System.out.println("\t" + t.getConstraints());
+                        }
+                    }
+                    System.out.println("------------------------------------------------");
+                });
+
+        Schema<PostgreSQLTable> converted = SchemaConverter.convertFromMySQLtoPostgrSQL(schema);
+        converted.getTables().forEach(
+                t -> {
+                    System.out.println("Table : " + t.getTableName());
+                    System.out.println("Columns :");
+                    System.out.println("\t" + t.getColumns());
+                    {
+                        if (t.getConstraints().size() != 0) {
+                            System.out.println("Constraint :");
+                            System.out.println("\t" + t.getConstraints());
+                        }
+                    }
+                    System.out.println("------------------------------------------------");
+                });
+       // PostgreSQLGenerator.migrate(converted);
 
     }
 }

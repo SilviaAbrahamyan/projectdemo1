@@ -6,17 +6,18 @@ import java.util.List;
 /**
  * Created by home on 1/12/2019.
  */
-public class Schema {
-    private List<Table> tables;
+public class Schema<T> {
+    private List<T> tables;
 
     public Schema() {
         this.tables = new ArrayList<>();
     }
-    public List<Table> getTables() {
+
+    public List<T> getTables() {
         return tables;
     }
 
-    public void addTables(Table table) {
+    public void addTables(T table) {
         tables.add(table);
     }
 }
