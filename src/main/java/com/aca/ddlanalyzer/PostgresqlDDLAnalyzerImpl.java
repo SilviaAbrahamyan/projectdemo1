@@ -10,42 +10,47 @@ import java.sql.*;
  */
 public class PostgresqlDDLAnalyzerImpl implements DDLAnalyzer {
     @Override
-    public Schema<PostgreSQLTable> getSchema(String jdbcUrl, String username, String password) throws SQLException {
+    public Schema<PostgreSQLTable> getSchema(String jdbcUrl) throws SQLException {
+        String user = "root";
+        String password = "root";
         Connection connection = DriverManager.getConnection(
                 jdbcUrl,
-                "postgres",
-                "root"
+              user,
+                password
         );
 
-        String showTablesSql = "SELECT * FROM information_schema.tables WHERE table_schema = 'public'";
+        String showTablesSql =
+                "SELECT TABLE_NAME, TABLE_TYPE " +
+                        "FROM INFORMATION_SCHEMA.TABLES " +
+                        "WHERE TABLE_SCHEMA = 'public'";
         Statement showTablesStatement = connection.createStatement();
         ResultSet resultSet = showTablesStatement.executeQuery(showTablesSql);
 
         Schema<PostgreSQLTable> schema = new Schema<PostgreSQLTable>();
         while (resultSet.next()) {
-            String tableName = resultSet.getString(3);
-            PostgreSQLTable table = new PostgreSQLTable(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                    resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10),
-                    resultSet.getString(11), resultSet.getString(12));
+            String tableName = resultSet.getString(1);
+            PostgreSQLTable table = new PostgreSQLTable(resultSet.getString(1), resultSet.getString(2));
             PreparedStatement showColumnsStatement = connection.prepareStatement(
-                    "SELECT  * FROM information_schema.columns " +
-                            " WHERE table_schema = 'public' " +
-                            " AND table_name   = ?;");
+                    "SELECT COLUMN_NAME, ORDINAL_POSITION, COLUMN_DEFAULT, " +
+                            "IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, " +
+                            "CHARACTER_OCTET_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE  " +
+                            " FROM INFORMATION_SCHEMA.COLUMNS " +
+                            " WHERE TABLE_SCHEMA = 'public' " +
+                            " AND TABLE_NAME   = ?;");
             showColumnsStatement.setString(1, tableName);
             ResultSet resultSet1 = showColumnsStatement.executeQuery();
             while (resultSet1.next()) {
 
-                table.addColumns(new PostgreSQLColumn(resultSet1.getString(1), resultSet1.getString(2), resultSet1.getString(3),
-                        resultSet1.getString(4), resultSet1.getString(5), resultSet1.getString(6), resultSet1.getString(7),
-                        resultSet1.getString(8), resultSet1.getString(9), resultSet1.getString(10), resultSet1.getString(11),
-                        resultSet1.getString(12), resultSet1.getString(13), resultSet1.getString(14), resultSet1.getString(15),
-                        resultSet1.getString(16), resultSet1.getString(17), resultSet1.getString(18), resultSet1.getString(19),
-                        resultSet1.getString(20), resultSet1.getString(21), resultSet1.getString(22), resultSet1.getString(23),
-                        resultSet1.getString(24), resultSet1.getString(25), resultSet1.getString(26), resultSet1.getString(27),
-                        resultSet1.getString(28), resultSet1.getString(29), resultSet1.getString(30), resultSet1.getString(31),
-                        resultSet1.getString(32), resultSet1.getString(32), resultSet1.getString(33), resultSet1.getString(34),
-                        resultSet1.getString(35), resultSet1.getString(36), resultSet1.getString(37), resultSet1.getString(38),
-                        resultSet1.getString(39), resultSet1.getString(40), resultSet1.getString(41), resultSet1.getString(42)));
+                table.addColumn(new PostgreSQLColumn(
+                        resultSet1.getString(1),
+                        resultSet1.getInt(2),
+                        resultSet1.getString(3),
+                        resultSet1.getString(4),
+                        resultSet1.getString(5),
+                        resultSet1.getInt(6),
+                        resultSet1.getInt(7),
+                        resultSet1.getInt(8),
+                        resultSet1.getInt(9)));
 
                 PreparedStatement showFkeysStatement = connection.prepareStatement(
                         "SELECT  TC.CONSTRAINT_NAME, TC.CONSTRAINT_TYPE, TC.TABLE_NAME, KCU.COLUMN_NAME,  CCU.TABLE_NAME, CCU.COLUMN_NAME " +
