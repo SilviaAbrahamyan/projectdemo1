@@ -35,15 +35,28 @@ public class PostgreSQLGenerator implements SQLGenerator<PostgreSQLTable> {
                 if (size != 1) {
                     sql += column.getName() + " " + column.getDataType() +
                             ((column.getCharacterMaximumLength() != 0) ? ("(" + column.getCharacterMaximumLength() + ")") : "") +
-                            " " + column.getIsNullable() + " " +
-                            ("PRIMARY KEY".equals((postgreSQLConstraintByColumnName != null ? (postgreSQLConstraintByColumnName.getType()) : " ")) ? "PRIMARY KEY" : "") + ", ";
+                            " " + column.getIsNullable() +",";
                 } else {
                     sql += column.getName() + " " + column.getDataType() +
                             ((column.getCharacterMaximumLength() != 0) ? ("(" + column.getCharacterMaximumLength() + ")") : "") +
-                            " " + column.getIsNullable() + " " +
-                            ("PRIMARY KEY".equals((postgreSQLConstraintByColumnName != null ? (postgreSQLConstraintByColumnName.getType()) : " ")) ? "PRIMARY KEY" : "");
+                            " " + column.getIsNullable();
                 }
                 size--;
+            }
+            if (table.getConstraintByPrimaryKey().size() != 0) {
+                sql += ", PRIMARY KEY(";
+                for(PostgreSQLConstraint constraint: table.getConstraintByPrimaryKey()){
+                    sql += constraint.getColumn() + ",";
+                }
+                sql = sql.substring(0, sql.length()-1) + ")";
+            }
+
+            if (table.getConstraintByForeignKey().size() != 0) {
+                sql += ", FOREIGN KEY";
+                for(PostgreSQLConstraint constraint: table.getConstraintByPrimaryKey()){
+                    sql += constraint.getColumn() + ",";
+                }
+                sql = sql.substring(0, sql.length()-1) + ")";
             }
             sql += ")";
             System.out.println(sql);

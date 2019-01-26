@@ -77,4 +77,24 @@ public class PostgreSQLTable {
         }
         return null;
     }
+
+    public  List<PostgreSQLConstraint> getConstraintByPrimaryKey(){
+        List<PostgreSQLConstraint> constraintsByPK = new ArrayList<>();
+        for(PostgreSQLConstraint postgreSQLConstraint: constraints){
+            if("PRIMARY KEY".equals(postgreSQLConstraint.getType())){
+                constraintsByPK.add(postgreSQLConstraint);
+            }
+        }
+        return constraintsByPK;
+    }
+
+    public  List<PostgreSQLConstraint> getConstraintByForeignKey(){
+        List<PostgreSQLConstraint> constraintsByFK = new ArrayList<>();
+        for(PostgreSQLConstraint postgreSQLConstraint: constraints){
+            if("FOREIGN KEY".equals(postgreSQLConstraint.getType())){
+                constraintsByFK.add(postgreSQLConstraint);
+            }
+        }
+        return constraintsByFK;
+    }
 }
