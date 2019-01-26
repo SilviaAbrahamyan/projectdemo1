@@ -35,7 +35,7 @@ public enum Type {
     INTERVAL("INTERVAL", "TIME"),
     BYTEA("BYTEA", "LONGBLOB"),
     BLOB("BYTEA", "BLOB"),
-    TEXT("TEXT", "LONGTEXT"),
+    TEXT("LONGTEXT", "TEXT" ),
     UUID("UUID", "VARCHAR(36)");
 
 

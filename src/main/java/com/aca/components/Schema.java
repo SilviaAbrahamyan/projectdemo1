@@ -20,4 +20,5 @@ public class Schema<T> {
     public void addTables(T table) {
         tables.add(table);
     }
+
 }

@@ -67,4 +67,14 @@ public class PostgreSQLTable {
                 "name='" + name + '\'' +
                 '}' + "\n";
     }
+
+    public PostgreSQLConstraint getConstraintByColumnName(String columnName){
+
+        for(PostgreSQLConstraint postgreSQLConstraint: constraints){
+            if(postgreSQLConstraint.getColumn().equals(columnName)){
+                return postgreSQLConstraint;
+            }
+        }
+        return null;
+    }
 }

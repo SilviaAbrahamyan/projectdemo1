@@ -102,12 +102,14 @@ public class MySQLColumn {
     }
 
 
-
     @Override
     public String toString() {
-        return "MySQLColumn{" +
+        return "PostgreSQLColumn{" +
                 "name='" + name + '\'' +
-                ", datatype =" + dataType + "(" + numericPrecision + ")" +
-                '}' + "\n";
+                ", datatype =" + dataType +
+                ((characterMaximumLength != 0)? ("(" + characterMaximumLength + "") : "") +
+                ((numericPrecision != 0)? ("(" + numericPrecision + "") : "") +
+                ((numericScale != 0)? ("),(" + numericScale+ ")") : ")") +
+                "}";
     }
 }
