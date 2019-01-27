@@ -31,7 +31,6 @@ public class PostgreSQLGenerator implements SQLGenerator<PostgreSQLTable> {
             int size = table.getColumns().size();
             sql.append("CREATE TABLE IF NOT EXISTS " + table.getName() + " (");
             for (PostgreSQLColumn column : table.getColumns()) {
-                PostgreSQLConstraint postgreSQLConstraintByColumnName = table.getConstraintByColumnName(column.getName());
                 if (size != 1) {
                     sql.append(column.getName() + " " + column.getDataType() + " " +
                             ((column.getCharacterMaximumLength() != 0 && !(column.getDataType().equals("BYTEA"))) ? ("(" + column.getCharacterMaximumLength() + ")") : "") + " " +
