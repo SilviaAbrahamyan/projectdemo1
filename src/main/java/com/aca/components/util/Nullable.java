@@ -13,13 +13,8 @@ public enum Nullable {
         this.nullable = nullable;
     }
 
-    public static String getIsNullable(String isNullable) {
-
-        if (Nullable.NO.toString().equals(isNullable)) {
-            return Nullable.NO.nullable;
-        }
-        return Nullable.YES.nullable;
-
+    @Override
+    public String toString() {
+        return  nullable;
     }
-
 }

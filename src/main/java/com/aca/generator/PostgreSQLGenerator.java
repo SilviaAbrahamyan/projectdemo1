@@ -14,9 +14,9 @@ import java.sql.Statement;
  * Created by home on 1/21/2019.
  */
 public class PostgreSQLGenerator implements SQLGenerator<PostgreSQLTable> {
+
     private static Connection connection = null;
     private static Statement statement = null;
-
 
     @Override
     public void migrate(Schema<PostgreSQLTable> schema) throws SQLException {
@@ -25,37 +25,48 @@ public class PostgreSQLGenerator implements SQLGenerator<PostgreSQLTable> {
                 "postgres",
                 "root"
         );
-
+        StringBuilder sql = new StringBuilder();
         for (PostgreSQLTable table : schema.getTables()) {
-            StringBuilder sql = new StringBuilder();
-            int size = table.getColumns().size();
             sql.append("CREATE TABLE IF NOT EXISTS " + table.getName() + " (");
             for (PostgreSQLColumn column : table.getColumns()) {
-                if (size != 1) {
-                    sql.append(column.getName() + " " + column.getDataType() + " " +
-                            ((column.getCharacterMaximumLength() != 0 && !(column.getDataType().equals("BYTEA"))) ? ("(" + column.getCharacterMaximumLength() + ")") : "") + " " +
-                            (column.getDefaultValue() != null ? "DEFAULT " + column.getDefaultValue() : "") + " " + column.getIsNullable() + ",");
-                } else {
-                    sql.append(column.getName() + " " + column.getDataType() + " " +
-                            ((column.getCharacterMaximumLength() != 0 && !(column.getDataType().equals("BYTEA"))) ? ("(" + column.getCharacterMaximumLength() + ")") : "") + " " +
-                            (column.getDefaultValue() != null ? "DEFAULT " + column.getDefaultValue() : "") + " " + column.getIsNullable());
-                }
-                size--;
-            }
-            if (table.getConstraintByPrimaryKey().size() != 0) {
-                sql.append(", PRIMARY KEY(");
-                for (PostgreSQLConstraint constraint : table.getConstraintByPrimaryKey()) {
-                    sql.append(constraint.getColumn() + ",");
-                }
+                sql.append(column.getName())
+                        .append(" ")
+                        .append(column.getType())
+                        .append(" ")
+                        .append(column.getDefaultValue() != null ? "DEFAULT " + column.getDefaultValue() : "")
+                        .append(" ")
+                        .append(column.getIsNullable())
+                        .append(",");
                 sql.setLength(sql.length() - 1);
-                sql.append(")");
             }
-            sql.append(")");
-            System.out.println(sql);
-            statement = connection.createStatement();
-            statement.executeUpdate(sql.toString());
-            System.out.println(table.getName() + " Table created successfully");
+            sql.append(");\n");
         }
+        schema.getTables().stream().filter(table -> table.getConstraintByPrimaryKey().size() != 0).forEach(table -> {
+            sql.append(" ALTER TABLE " + table.getName() + " ADD PRIMARY KEY(");
+            for (PostgreSQLConstraint constraint : table.getConstraintByPrimaryKey()) {
+                sql.append(constraint.getColumn()).append(",");
+            }
+            sql.setLength(sql.length() - 1);
+            sql.append(");\n");
+        });
+        schema.getTables().stream().filter(table -> table.getConstraintByPrimaryKey().size() != 0).forEach(table -> {
+            for (PostgreSQLConstraint constraint : table.getConstraintByForeignKey()) {
+                sql.append(" ALTER TABLE " + table.getName() + " ADD CONSTRAINT ")
+                        .append(constraint.getName())
+                        .append(" FOREIGN KEY")
+                        .append("(")
+                        .append(constraint.getColumn())
+                        .append(")")
+                        .append(" REFERENCES ")
+                        .append(constraint.getReferencedTable())
+                        .append("(")
+                        .append(constraint.getReferencedColumn())
+                        .append(");\n");
+            }
+        });
+        System.out.println(sql);
+        statement = connection.createStatement();
+        statement.executeUpdate(sql.toString());
     }
 
 }

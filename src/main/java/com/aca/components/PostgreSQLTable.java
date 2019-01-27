@@ -68,15 +68,7 @@ public class PostgreSQLTable {
                 '}' + "\n";
     }
 
-    public PostgreSQLConstraint getConstraintByColumnName(String columnName){
 
-        for(PostgreSQLConstraint postgreSQLConstraint: constraints){
-            if(postgreSQLConstraint.getColumn().equals(columnName)){
-                return postgreSQLConstraint;
-            }
-        }
-        return null;
-    }
 
     public  List<PostgreSQLConstraint> getConstraintByPrimaryKey(){
         List<PostgreSQLConstraint> constraintsByPK = new ArrayList<>();
@@ -87,7 +79,6 @@ public class PostgreSQLTable {
         }
         return constraintsByPK;
     }
-
     public  List<PostgreSQLConstraint> getConstraintByForeignKey(){
         List<PostgreSQLConstraint> constraintsByFK = new ArrayList<>();
         for(PostgreSQLConstraint postgreSQLConstraint: constraints){

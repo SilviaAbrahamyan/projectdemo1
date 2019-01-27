@@ -7,7 +7,7 @@ import java.util.List;
  * Created by home on 1/24/2019.
  */
 public enum Type {
-    INT("INT", "INT"),
+    INT("NUMERIC", "INT"),
     INTEGER("INTEGER", "SMALLINT"),
     SMALLINT("SMALLINT", "SMALLINT"),
     BIGINT("BIGINT", "BIGINT"),

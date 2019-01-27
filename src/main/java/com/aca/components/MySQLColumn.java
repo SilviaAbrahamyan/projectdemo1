@@ -1,5 +1,7 @@
 package com.aca.components;
 
+import com.aca.components.util.Nullable;
+
 /**
  * Created by home on 1/15/2019.
  */
@@ -7,16 +9,17 @@ public class MySQLColumn {
     private String name;
     private int ordinalPosition;
     private String defaultValue;
-    private String isNullable;
+    private Nullable isNullable;
     private String dataType;
     private int characterMaximumLength;
     private int characterOctetLength;
     private int numericPrecision;
     private int numericScale;
+    private String type;
 
 
     public MySQLColumn(String name, int ordinalPosition, String defaultValue,
-                       String isNullable, String dataType, int characterMaximumLength,
+                       Nullable isNullable, String dataType, int characterMaximumLength,
                        int characterOctetLength, int numericPrecision, int numericScale) {
         this.name = name;
         this.ordinalPosition = ordinalPosition;
@@ -27,6 +30,22 @@ public class MySQLColumn {
         this.characterOctetLength = characterOctetLength;
         this.numericPrecision = numericPrecision;
         this.numericScale = numericScale;
+        this.type = dataType +
+                ((characterMaximumLength != 0) ? ("(" + characterMaximumLength + ")") : "") +
+                ((numericPrecision != 0 && numericPrecision != 32 && numericPrecision != 65535) ?
+                        ("(" + numericPrecision + ((numericScale != 0) ?
+                                (" , " + numericScale + ")") : ")") + ""): "");
+
+
+
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getName() {
@@ -53,11 +72,11 @@ public class MySQLColumn {
         this.defaultValue = defaultValue;
     }
 
-    public String getIsNullable() {
+    public Nullable getIsNullable() {
         return isNullable;
     }
 
-    public void setIsNullable(String isNullable) {
+    public void setIsNullable(Nullable isNullable) {
         this.isNullable = isNullable;
     }
 
@@ -107,9 +126,9 @@ public class MySQLColumn {
         return "PostgreSQLColumn{" +
                 "name='" + name + '\'' +
                 ", datatype =" + dataType +
-                ((characterMaximumLength != 0)? ("(" + characterMaximumLength + "") : "") +
-                ((numericPrecision != 0)? ("(" + numericPrecision + "") : "") +
-                ((numericScale != 0)? ("),(" + numericScale+ ")") : ")") +
+                ((characterMaximumLength != 0) ? ("(" + characterMaximumLength + "") : "") +
+                ((numericPrecision != 0) ? ("(" + numericPrecision + "") : "") +
+                ((numericScale != 0) ? ("),(" + numericScale + ")") : ")") +
                 "}";
     }
 }

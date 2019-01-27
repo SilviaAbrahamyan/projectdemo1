@@ -15,7 +15,7 @@ public class MySQLToPostgreSql implements Converter<MySQLTable, PostgreSQLTable>
             for (MySQLColumn columnFrom : tablefrom.getColumns()) {
                 PostgreSQLColumn columnTo = new PostgreSQLColumn(
                         columnFrom.getName(), columnFrom.getOrdinalPosition(), columnFrom.getDefaultValue(),
-                        Nullable.getIsNullable(columnFrom.getIsNullable()), Type.getDataType("mysql","postgresql",columnFrom.getDataType().toUpperCase()), columnFrom.getCharacterMaximumLength(),
+                        columnFrom.getIsNullable(), Type.getDataType("mysql","postgresql",columnFrom.getDataType().toUpperCase()), columnFrom.getCharacterMaximumLength(),
                         columnFrom.getCharacterOctetLength(), columnFrom.getNumericPrecision(), columnFrom.getNumericScale()
                 );
                 tableTo.addColumn(columnTo);

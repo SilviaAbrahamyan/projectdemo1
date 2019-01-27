@@ -26,7 +26,7 @@ public class SchemaConverter {
                String type = t1.getDataType().toUpperCase();
                type =  Type.getDataType("mysql","postgresql",type);
                 pColumn = new PostgreSQLColumn(t1.getName(),t1.getOrdinalPosition(), t1.getDefaultValue(),
-                        Nullable.getIsNullable(t1.getIsNullable()),type,t1.getCharacterMaximumLength(), t1.getCharacterOctetLength(),
+                        t1.getIsNullable(),type,t1.getCharacterMaximumLength(), t1.getCharacterOctetLength(),
                         t1.getNumericPrecision(), t1.getNumericScale());
                 pTable.addColumn(pColumn);
             });
@@ -49,7 +49,7 @@ public class SchemaConverter {
                 String type = t1.getDataType().toUpperCase();
                 type =  Type.getDataType("postgresql", "mysql",type);
                         mColumn = new MySQLColumn(t1.getName(),t1.getOrdinalPosition(),t1.getDefaultValue(),
-                                Nullable.getIsNullable(t1.getIsNullable()),type,t1.getCharacterMaximumLength(),t1.getCharacterOctetLength(),
+                                t1.getIsNullable(),type,t1.getCharacterMaximumLength(),t1.getCharacterOctetLength(),
                                 t1.getNumericPrecision(),t1.getNumericScale());
                         mTable.addColumn(mColumn);
                     }

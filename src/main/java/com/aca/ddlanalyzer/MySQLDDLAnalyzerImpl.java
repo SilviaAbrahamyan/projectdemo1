@@ -1,6 +1,7 @@
 package com.aca.ddlanalyzer;
 
 import com.aca.components.*;
+import com.aca.components.util.Nullable;
 import com.aca.helper.JdbcUrlHelper;
 
 import java.sql.*;
@@ -43,7 +44,7 @@ public class MySQLDDLAnalyzerImpl implements DDLAnalyzer {
                         resultSet1.getString(1),
                         resultSet1.getInt(2),
                         resultSet1.getString(3),
-                        resultSet1.getString(4),
+                        Nullable.valueOf(resultSet1.getString(4)),
                         resultSet1.getString(5),
                         resultSet1.getInt(6),
                         resultSet1.getInt(7),
