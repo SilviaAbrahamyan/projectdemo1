@@ -17,8 +17,6 @@ public class PostgreSQLGenerator implements SQLGenerator<PostgreSQLTable> {
     private static Connection connection = null;
     private static Statement statement = null;
 
-    //   ("FOREIGN KEY".equals((postgreSQLConstraintByColumnName != null ? (postgreSQLConstraintByColumnName.getType()) : " ")) ?
-    //   "REFERENCES " + postgreSQLConstraintByColumnName.getReferencedTable() + "(" + postgreSQLConstraintByColumnName.getReferencedColumn() + ")" : "")
 
     @Override
     public void migrate(Schema<PostgreSQLTable> schema) throws SQLException {
@@ -27,41 +25,36 @@ public class PostgreSQLGenerator implements SQLGenerator<PostgreSQLTable> {
                 "postgres",
                 "root"
         );
+
         for (PostgreSQLTable table : schema.getTables()) {
+            StringBuilder sql = new StringBuilder();
             int size = table.getColumns().size();
-            String sql = "CREATE TABLE " + table.getName() + " (";
+            sql.append("CREATE TABLE IF NOT EXISTS " + table.getName() + " (");
             for (PostgreSQLColumn column : table.getColumns()) {
                 PostgreSQLConstraint postgreSQLConstraintByColumnName = table.getConstraintByColumnName(column.getName());
                 if (size != 1) {
-                    sql += column.getName() + " " + column.getDataType() +
-                            ((column.getCharacterMaximumLength() != 0) ? ("(" + column.getCharacterMaximumLength() + ")") : "") +
-                            " " + column.getIsNullable() +",";
+                    sql.append(column.getName() + " " + column.getDataType() + " " +
+                            ((column.getCharacterMaximumLength() != 0 && !(column.getDataType().equals("BYTEA"))) ? ("(" + column.getCharacterMaximumLength() + ")") : "") + " " +
+                            (column.getDefaultValue() != null ? "DEFAULT " + column.getDefaultValue() : "") + " " + column.getIsNullable() + ",");
                 } else {
-                    sql += column.getName() + " " + column.getDataType() +
-                            ((column.getCharacterMaximumLength() != 0) ? ("(" + column.getCharacterMaximumLength() + ")") : "") +
-                            " " + column.getIsNullable();
+                    sql.append(column.getName() + " " + column.getDataType() + " " +
+                            ((column.getCharacterMaximumLength() != 0 && !(column.getDataType().equals("BYTEA"))) ? ("(" + column.getCharacterMaximumLength() + ")") : "") + " " +
+                            (column.getDefaultValue() != null ? "DEFAULT " + column.getDefaultValue() : "") + " " + column.getIsNullable());
                 }
                 size--;
             }
             if (table.getConstraintByPrimaryKey().size() != 0) {
-                sql += ", PRIMARY KEY(";
-                for(PostgreSQLConstraint constraint: table.getConstraintByPrimaryKey()){
-                    sql += constraint.getColumn() + ",";
+                sql.append(", PRIMARY KEY(");
+                for (PostgreSQLConstraint constraint : table.getConstraintByPrimaryKey()) {
+                    sql.append(constraint.getColumn() + ",");
                 }
-                sql = sql.substring(0, sql.length()-1) + ")";
+                sql.setLength(sql.length() - 1);
+                sql.append(")");
             }
-
-            if (table.getConstraintByForeignKey().size() != 0) {
-                sql += ", FOREIGN KEY";
-                for(PostgreSQLConstraint constraint: table.getConstraintByPrimaryKey()){
-                    sql += constraint.getColumn() + ",";
-                }
-                sql = sql.substring(0, sql.length()-1) + ")";
-            }
-            sql += ")";
+            sql.append(")");
             System.out.println(sql);
             statement = connection.createStatement();
-            statement.executeUpdate(sql);
+            statement.executeUpdate(sql.toString());
             System.out.println(table.getName() + " Table created successfully");
         }
     }
