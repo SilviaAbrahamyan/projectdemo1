@@ -1,6 +1,8 @@
 package com.aca;
 
 import com.aca.components.*;
+import com.aca.components.table.MySQLTable;
+import com.aca.components.table.PostgreSQLTable;
 import com.aca.converter.ConverterFactory;
 import com.aca.ddlanalyzer.DDlAnalyzerFactory;
 import com.aca.helper.JdbcUrlHelper;

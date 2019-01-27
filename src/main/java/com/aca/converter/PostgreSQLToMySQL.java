@@ -2,7 +2,12 @@ package com.aca.converter;
 
 
 import com.aca.components.*;
-import com.aca.components.util.Nullable;
+import com.aca.components.column.MySQLColumn;
+import com.aca.components.column.PostgreSQLColumn;
+import com.aca.components.constraint.MySQLConstraint;
+import com.aca.components.constraint.PostgreSQLConstraint;
+import com.aca.components.table.MySQLTable;
+import com.aca.components.table.PostgreSQLTable;
 import com.aca.components.util.Type;
 
 public class PostgreSQLToMySQL implements Converter<PostgreSQLTable, MySQLTable> {

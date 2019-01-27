@@ -1,11 +1,12 @@
-package com.aca.components;
+package com.aca.components.column;
 
 import com.aca.components.util.Nullable;
 
 /**
  * Created by home on 1/15/2019.
  */
-public class MySQLColumn {
+public class PostgreSQLColumn {
+
     private String name;
     private int ordinalPosition;
     private String defaultValue;
@@ -17,10 +18,9 @@ public class MySQLColumn {
     private int numericScale;
     private String type;
 
-
-    public MySQLColumn(String name, int ordinalPosition, String defaultValue,
-                       Nullable isNullable, String dataType, int characterMaximumLength,
-                       int characterOctetLength, int numericPrecision, int numericScale) {
+    public PostgreSQLColumn(String name, int ordinalPosition, String defaultValue,
+                            Nullable isNullable, String dataType, int characterMaximumLength,
+                            int characterOctetLength, int numericPrecision, int numericScale) {
         this.name = name;
         this.ordinalPosition = ordinalPosition;
         this.defaultValue = defaultValue;
@@ -30,14 +30,19 @@ public class MySQLColumn {
         this.characterOctetLength = characterOctetLength;
         this.numericPrecision = numericPrecision;
         this.numericScale = numericScale;
+
+        if (numericPrecision != 0 && numericPrecision != 32) dataType = "NUMERIC";
+
         this.type = dataType +
-                ((characterMaximumLength != 0) ? ("(" + characterMaximumLength + ")") : "") +
-                ((numericPrecision != 0 && numericPrecision != 32 && numericPrecision != 65535) ?
+                ((characterMaximumLength != 0 && characterMaximumLength != 65535) ?
+                        ("(" + characterMaximumLength + ")")
+                        : "") +
+                ((numericPrecision != 0 && numericPrecision != 32) ?
                         ("(" + numericPrecision + ((numericScale != 0) ?
-                                (" , " + numericScale + ")") : ")") + ""): "");
-
-
-
+                                (" , " + numericScale + ")")
+                                : ")") + "")
+                        : "")
+        ;
     }
 
     public String getType() {
@@ -120,15 +125,18 @@ public class MySQLColumn {
         this.numericScale = numericScale;
     }
 
-
     @Override
     public String toString() {
         return "PostgreSQLColumn{" +
                 "name='" + name + '\'' +
-                ", datatype =" + dataType +
-                ((characterMaximumLength != 0) ? ("(" + characterMaximumLength + "") : "") +
-                ((numericPrecision != 0) ? ("(" + numericPrecision + "") : "") +
-                ((numericScale != 0) ? ("),(" + numericScale + ")") : ")") +
-                "}";
+                ", ordinalPosition=" + ordinalPosition +
+                ", defaultValue='" + defaultValue + '\'' +
+                ", isNullable='" + isNullable + '\'' +
+                ", dataType='" + dataType + '\'' +
+                ", characterMaximumLength=" + characterMaximumLength +
+                ", characterOctetLength=" + characterOctetLength +
+                ", numericPrecision=" + numericPrecision +
+                ", numericScale=" + numericScale +
+                '}' + "\n";
     }
 }

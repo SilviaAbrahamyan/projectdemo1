@@ -1,6 +1,9 @@
 package com.aca.ddlanalyzer;
 
 import com.aca.components.*;
+import com.aca.components.column.MySQLColumn;
+import com.aca.components.constraint.MySQLConstraint;
+import com.aca.components.table.MySQLTable;
 import com.aca.components.util.Nullable;
 import com.aca.helper.JdbcUrlHelper;
 

@@ -1,4 +1,7 @@
-package com.aca.components;
+package com.aca.components.table;
+
+import com.aca.components.constraint.PostgreSQLConstraint;
+import com.aca.components.column.PostgreSQLColumn;
 
 import java.util.ArrayList;
 import java.util.List;

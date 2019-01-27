@@ -1,6 +1,9 @@
 package com.aca.ddlanalyzer;
 
 import com.aca.components.*;
+import com.aca.components.column.PostgreSQLColumn;
+import com.aca.components.constraint.PostgreSQLConstraint;
+import com.aca.components.table.PostgreSQLTable;
 import com.aca.components.util.Nullable;
 
 

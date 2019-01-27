@@ -1,8 +1,8 @@
 package com.aca.generator;
 
-import com.aca.components.PostgreSQLColumn;
-import com.aca.components.PostgreSQLConstraint;
-import com.aca.components.PostgreSQLTable;
+import com.aca.components.column.PostgreSQLColumn;
+import com.aca.components.constraint.PostgreSQLConstraint;
+import com.aca.components.table.PostgreSQLTable;
 import com.aca.components.Schema;
 
 import java.sql.Connection;
