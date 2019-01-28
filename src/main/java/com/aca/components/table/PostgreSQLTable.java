@@ -13,6 +13,7 @@ public class PostgreSQLTable {
 
     private String name;
     private String type;
+    private boolean enable;
 
     private List<PostgreSQLColumn> columns;
     private List<PostgreSQLConstraint> constraints;
@@ -71,8 +72,6 @@ public class PostgreSQLTable {
                 '}' + "\n";
     }
 
-
-
     public  List<PostgreSQLConstraint> getConstraintByPrimaryKey(){
         List<PostgreSQLConstraint> constraintsByPK = new ArrayList<>();
         for(PostgreSQLConstraint postgreSQLConstraint: constraints){
@@ -90,5 +89,13 @@ public class PostgreSQLTable {
             }
         }
         return constraintsByFK;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public boolean isEnable() {
+        return enable;
     }
 }

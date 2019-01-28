@@ -12,6 +12,7 @@ import java.util.List;
 public class MySQLTable {
     private String name;
     private String type;
+    private boolean enable;
 
     private List<MySQLColumn> columns;
     private List<MySQLConstraint> constraints;
@@ -24,6 +25,13 @@ public class MySQLTable {
         this.constraints = new ArrayList<>();
     }
 
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enabled) {
+        this.enable = enabled;
+    }
 
     public void addColumn(MySQLColumn column){
         this.columns.add(column);
@@ -71,4 +79,6 @@ public class MySQLTable {
                 "name='" + name + '\'' +
                 '}' + "\n";
     }
+
+
 }
