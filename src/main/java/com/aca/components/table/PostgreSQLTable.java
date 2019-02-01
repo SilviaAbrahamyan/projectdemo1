@@ -9,11 +9,11 @@ import java.util.List;
 /**
  * Created by home on 1/15/2019.
  */
-public class PostgreSQLTable {
+public class PostgreSQLTable implements Table{
 
     private String name;
     private String type;
-    private boolean enable;
+    private boolean enabled;
 
     private List<PostgreSQLColumn> columns;
     private List<PostgreSQLConstraint> constraints;
@@ -91,11 +91,11 @@ public class PostgreSQLTable {
         return constraintsByFK;
     }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public boolean isEnable() {
-        return enable;
+    public boolean isEnabled() {
+        return enabled;
     }
 }

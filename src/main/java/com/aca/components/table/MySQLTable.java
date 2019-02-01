@@ -4,15 +4,17 @@ import com.aca.components.constraint.MySQLConstraint;
 import com.aca.components.column.MySQLColumn;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by home on 1/15/2019.
  */
-public class MySQLTable {
+public class MySQLTable implements Table{
     private String name;
     private String type;
-    private boolean enable;
+    private boolean enabled;
 
     private List<MySQLColumn> columns;
     private List<MySQLConstraint> constraints;
@@ -25,12 +27,12 @@ public class MySQLTable {
         this.constraints = new ArrayList<>();
     }
 
-    public boolean isEnable() {
-        return enable;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setEnable(boolean enabled) {
-        this.enable = enabled;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void addColumn(MySQLColumn column){
@@ -81,4 +83,24 @@ public class MySQLTable {
     }
 
 
+    public List<MySQLConstraint> getConstraintByPrimaryKey() {
+        List<MySQLConstraint> constraintsByPK = new ArrayList<>();
+        for (MySQLConstraint mySQLConstraint : constraints) {
+            if ("PRIMARY KEY".equals(mySQLConstraint.getType())) {
+                constraintsByPK.add(mySQLConstraint);
+            }
+        }
+
+        return constraintsByPK.stream().distinct().collect(Collectors.toList());
+    }
+
+    public List<MySQLConstraint> getConstraintByForeignKey() {
+        List<MySQLConstraint> constraintsByFK = new ArrayList<>();
+        for (MySQLConstraint mySQLConstraint : constraints) {
+            if ("FOREIGN KEY".equals(mySQLConstraint.getType())) {
+                constraintsByFK.add(mySQLConstraint);
+            }
+        }
+        return constraintsByFK;
+    }
 }
