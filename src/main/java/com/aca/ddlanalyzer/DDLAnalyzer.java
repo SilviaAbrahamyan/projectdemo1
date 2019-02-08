@@ -9,5 +9,5 @@ import java.sql.SQLException;
  */
 @FunctionalInterface
 public interface DDLAnalyzer {
-    Schema getSchema(String jdbcUrl) throws SQLException;
+    Schema getSchema() throws SQLException;
 }

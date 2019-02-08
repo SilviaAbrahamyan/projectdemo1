@@ -13,13 +13,24 @@ import java.sql.*;
  * Created by home on 1/12/2019.
  */
 public class PostgresqlDDLAnalyzerImpl implements DDLAnalyzer {
+
+    private Connection connection;
+    private String url;
+    private String username;
+    private String password;
+
+    public PostgresqlDDLAnalyzerImpl(String url, String username, String password) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+    }
+
     @Override
-    public Schema<PostgreSQLTable> getSchema(String jdbcUrl) throws SQLException {
-        String user = "root";
-        String password = "root";
-        Connection connection = DriverManager.getConnection(
-                jdbcUrl,
-              user,
+    public Schema<PostgreSQLTable> getSchema() throws SQLException {
+
+        this.connection = DriverManager.getConnection(
+                url,
+                username,
                 password
         );
 

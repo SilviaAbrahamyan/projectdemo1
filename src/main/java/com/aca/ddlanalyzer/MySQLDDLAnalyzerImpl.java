@@ -13,16 +13,28 @@ import java.sql.*;
  * Created by home on 1/12/2019.
  */
 public class MySQLDDLAnalyzerImpl implements DDLAnalyzer {
+
+    private Connection connection;
+    private String url;
+    private String username;
+    private String password;
+
+    public MySQLDDLAnalyzerImpl(String url, String username, String password) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+    }
+
     @Override
-    public Schema<MySQLTable> getSchema(String jdbcUrl) throws SQLException {
+    public Schema<MySQLTable> getSchema() throws SQLException {
         String user = "root";
         String password = "root";
-        Connection connection = DriverManager.getConnection(
-                jdbcUrl,
-                user,
+        this.connection = DriverManager.getConnection(
+                url,
+                username,
                 password
         );
-        String dbName = JdbcUrlHelper.getDbName(jdbcUrl);
+        String dbName = JdbcUrlHelper.getDbName(url);
 
         PreparedStatement showTablesStatement = connection.prepareStatement(
                 " SELECT TABLE_NAME, TABLE_TYPE " +

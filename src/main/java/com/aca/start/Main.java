@@ -1,4 +1,4 @@
-package com.aca;
+package com.aca.start;
 
 import com.aca.components.*;
 import com.aca.components.table.MySQLTable;
@@ -24,21 +24,39 @@ import java.util.stream.Collectors;
  */
 public class Main {
     public static void main(String[] args) throws SQLException {
+
+//   postgre     String usernameFrom = "postgres";
+//        String passwordFrom = "root";
+
+        //     musql   String usernameTo = "root";
+//        String passwordTo = "root";
+
         String usernameFrom = "root";
-        String usernameTo = "postgres";
         String passwordFrom = "root";
+
+        String usernameTo = "postgres";
         String passwordTo = "root";
+
+
+
+
+
 
         // String jdbcMySQLUrl = "jdbc:mysql://aca-db.duckdns.org:3306/do_not_touch";
         //  String jdbcPostgreSqlUrl = "jdbc:postgresql://aca-db.duckdns.org:5432/postgres";
 
         String jdbcMySQLUrl = "jdbc:mysql://localhost:3306/test2";
         String jdbcPostgreSqlUrl = "jdbc:postgresql://localhost:5432/postgres";
-        Schema postgreSQLSchema = DDlAnalyzerFactory.getAnalyzer(JdbcUrlHelper.getDbType(jdbcPostgreSqlUrl)).getSchema(jdbcPostgreSqlUrl);
-        Schema mySQLSchema = DDlAnalyzerFactory.getAnalyzer(JdbcUrlHelper.getDbType(jdbcMySQLUrl)).getSchema(jdbcMySQLUrl);
+
+        Schema mySQLSchema = DDlAnalyzerFactory.
+                getAnalyzer(jdbcMySQLUrl, usernameFrom, passwordFrom)
+                .getSchema();
+//        Schema postgreSQLSchema = DDlAnalyzerFactory
+//                .getAnalyzer(jdbcPostgreSqlUrl, usernameFrom, passwordFrom)
+//                .getSchema();
 
         Schema mySQLSchemaAfterSelected = userSelectedTables(mySQLSchema, jdbcMySQLUrl);
-        Schema postgreSQLSchemaAfterSelected = userSelectedTables(postgreSQLSchema, jdbcPostgreSqlUrl);
+        //Schema postgreSQLSchemaAfterSelected = userSelectedTables(postgreSQLSchema, jdbcPostgreSqlUrl);
 
 
         Schema<PostgreSQLTable> convertedMyToPostgres = ConverterFactory.getConverter(JdbcUrlHelper.getDbType(jdbcMySQLUrl), JdbcUrlHelper.getDbType(jdbcPostgreSqlUrl)).convert(mySQLSchemaAfterSelected);
