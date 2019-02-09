@@ -4,6 +4,7 @@ package com.aca.afterwork.controllers;
 import com.aca.afterwork.helper.Helper;
 import com.aca.components.Schema;
 import com.aca.ddlanalyzer.DDlAnalyzerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@RestController
+@Controller
 
 public class DbWorkController {
 
@@ -24,7 +25,7 @@ public class DbWorkController {
 
     @GetMapping("/")
     public ModelAndView homePage() {
-        return new ModelAndView("index.html");
+        return new ModelAndView("index");
     }
 
     @PostMapping("/")
@@ -37,7 +38,7 @@ public class DbWorkController {
 
     @GetMapping("/schema")
     public ModelAndView showTables(HttpServletRequest httpServletRequest) throws SQLException {
-        ModelAndView modelAndView = new ModelAndView("view.html");
+        ModelAndView modelAndView = new ModelAndView("view");
         List tables = Helper.getTables(urlFrom, usernameFrom, passwordFrom);
         modelAndView.addObject("tables", tables);
         return modelAndView;
