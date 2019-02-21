@@ -1,14 +1,61 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Tables and checkboxes</title>
-    <!--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>-->
+    <title>Migration</title>
+    <link th:href="@{/css/view.css}" rel="stylesheet"/>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.min.js"></script>
 </head>
 
-<body>
-<h1>Table's name page</h1>
-</body>
-<span th:each="table: ${tables}">
-        <input type="checkbox" td th:text="${table.name}"/><br>
-        </span>
+<body th:onload="'init(\'' + ${sessionId} + '\')'">
+<div class="container center">
+   <div class="grid">
+    <div class="left">
+        <h3>Tables' names</h3>
+        <div th:each="table: ${tables}">
+            <label>
+                <input name="checkik" type="checkbox" th:attr="value=${table.name}" th:text="${table.name}"/>
+            </label>
+        </div>
+    </div>
+    <div class="right">
+        <h3 class="head">Please enter your source db details</h3>
+        <br/>
+        <div>
+            <input id="urlTo" type="text" placeholder="URL To" name="urlTo"/>
+            <input id="usernameTo" type="text" placeholder="Username" name="usernameTo" />
+            <input id="passwordTo" type="password" placeholder="Password" name="passwordTo" />
+        </div>
+    </div>
+   </div>
+    <div class="message buttons">
+        <div class="btn-wrapper">
+            <button id="prepMigrate" class="button" onclick="generateSqls()">Prepare to migration</button>
+        </div>
+    </div>
+
+    <div id="err" class="socket" style="border: 1px solid; width: 800px; height: 200px;  overflow: scroll;">
+        <ul id="errors">
+
+        </ul>
+    </div>
+
+    <div class="message buttons">
+        <div class="btn-wrapper">
+            <button id="btnMigrate" class="button" onclick="migrate()">Migrate</button>
+        </div>
+    </div>
+
+    <div id="load"  class="socket"  style="border: 1px solid; width: 800px; height: 200px;  overflow: scroll;">
+        <ul id="loading">
+
+        </ul>
+    </div>
+</div>
+<script th:src="@{/js/view.js}"></script>
+
 </body>
 </html>
